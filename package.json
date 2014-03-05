@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mgechev/contributors-list",
   "dependencies": {
     "q": "~1.0.0",
-    "sprintf-js": "0.0.7"
+    "sprintf-js": "0.0.7",
+    "to-markdown": "0.0.1"
   }
 }
