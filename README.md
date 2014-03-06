@@ -1,4 +1,9 @@
-contributors-list
+Contributors list
 =================
 
-Node.js script, which outputs all the contributors for given project in different formats
+Gets the contributors for given open GitHub repository and outputs them in specific format.
+
+API
+===
+
+TBD
