@@ -19,7 +19,6 @@
   "dependencies": {
     "q": "~1.0.0",
     "sprintf-js": "0.0.7",
-    "to-markdown": "0.0.1",
-    "minimist": "0.0.8"
+    "minimist": "0.0.8",
   }
 }
