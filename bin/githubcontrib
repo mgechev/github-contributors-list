@@ -1,7 +1,9 @@
+#!/usr/bin/env node
+
 var args = require('minimist')(process.argv.slice(2)),
-    contributors = require('./lib/contributors'),
-    table = require('./lib/strategies/table'),
-    list = require('./lib/strategies/list'),
+    contributors = require('../lib/contributors'),
+    table = require('../lib/strategies/table'),
+    list = require('../lib/strategies/list'),
     strategies = {
       table: table,
       list: list
