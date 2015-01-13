@@ -1,5 +1,5 @@
 {
-  "name": "contributors-list",
+  "name": "github-contributors-list",
   "version": "0.0.0",
   "description": "Node.js script, which outputs all the contributors for given project in different formats",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/mgechev/contributors-list.git"
+    "url": "git://github.com/mgechev/github-contributors-list.git"
   },
   "author": "@mgechev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mgechev/contributors-list/issues"
+    "url": "https://github.com/mgechev/github-contributors-list/issues"
   },
-  "homepage": "https://github.com/mgechev/contributors-list",
+  "homepage": "https://github.com/mgechev/github-contributors-list",
   "dependencies": {
     "q": "~1.0.0",
     "sprintf-js": "0.0.7",
