@@ -24,6 +24,12 @@ The table strategy accepts the following parameters:
 - `show-logins` - Boolean, indicates whether the login of the contributor should be shown in the table
 - `columns-count` - Number - number of columns for the table
 
+## Different ways of formatting
+
+You can easily add more formatting strategies by exporting the formatting logic. Each strategy is located under `./lib/strategies`.
+
+For further details of how to implement a formatting strategy take a look at the already implemented ones.
+
 ## License
 
 MIT
