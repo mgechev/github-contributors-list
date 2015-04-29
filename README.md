@@ -7,7 +7,7 @@ Gets the contributors for given open GitHub repository and outputs them in speci
 In order to get the contributors list for your open-source project use:
 
 ```bash
-githubcontrib --repo REPO_NAME --cols 6 --user USERNAME --strategy table | pbcopy
+githubcontrib --repo REPO_NAME --cols 6 --user USERNAME --strategy table --filter user1,user2,user3 | pbcopy
 ```
 
 This way your contributors will be formatted in a table with their photos.
