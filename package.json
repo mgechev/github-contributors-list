@@ -1,6 +1,6 @@
 {
   "name": "github-contributors-list",
-  "version": "0.0.2",
+  "version": "0.1.2",
   "description": "Node.js script, which outputs all the contributors for given project in different formats",
   "main": "index.js",
   "bin": {
