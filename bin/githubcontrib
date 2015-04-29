@@ -17,6 +17,16 @@ if (args.layout) {
   args.layout = 'table';
 }
 
+if (args.filter) {
+  args.filter = args.filter.split(',').filter(function (u) {
+    return u.length > 0;
+  }).map(function (u) {
+    return u.trim();
+  });
+} else {
+  args.filter = [];
+}
+
 args.strategy = strategies[args.layout](args);
 contributors = contributors(args);
 
