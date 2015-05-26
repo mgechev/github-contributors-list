@@ -30,6 +30,10 @@ You can easily add more formatting strategies by exporting the formatting logic.
 
 For further details of how to implement a formatting strategy take a look at the already implemented ones.
 
+## GitHub Limit
+
+The Github API has a 60-requests-per-hour rate-limit for non-authenticated use. If you need some more then a scope-limited Github OAuth token can be used to boost the limit to 5000.
+
 ## License
 
 MIT
