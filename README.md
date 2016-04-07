@@ -1,6 +1,8 @@
 ## Contributors list
 
-Gets the contributors for given open GitHub repository and outputs them in specific format.
+Build awesome list of the contributors of your project!
+
+![alt tag](https://raw.githubusercontent.com/mgechev/github-contributors-list/master/assets/demo.png)
 
 ## Usage
 
@@ -10,7 +12,7 @@ In order to get the contributors list for your open-source project use:
 githubcontrib --repo REPO_NAME --cols 6 --user USERNAME --filter user1,user2,user3 | pbcopy
 ```
 
-## Advanced API
+### Advanced API
 
 | **Parameter name** | **Description**                                                                         | **Default value**                      | **Sample value**                    |
 |--------------------|-----------------------------------------------------------------------------------------|----------------------------------------|-------------------------------------|
