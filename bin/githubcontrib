@@ -1,20 +1,34 @@
 #!/usr/bin/env node
 
-var args = require('minimist')(process.argv.slice(2)),
-    contributors = require('../lib/contributors'),
-    table = require('../lib/strategies/table'),
-    list = require('../lib/strategies/list'),
-    strategies = {
-      table: table,
-      list: list
-    };
+var args = require('minimist')(process.argv.slice(2));
+var contributors = require('../lib/contributors');
+var table = require('../lib/strategies/table');
+var list = require('../lib/strategies/list');
+var fs = require('fs');
+var strategies = {
+  table: table,
+  list: list
+};
 
 if (args.layout) {
-  if (!strategies[args.layout]) {
+  if (fs.fileExistsSync(args.layout)) {
+    strategies.custom = require(args.layout);
+    args.layout = 'custom';
+  } else {
     throw new Error('Invalid layout strategy', args.layout);
+    process.exit(0);
   }
 } else {
   args.layout = 'table';
+}
+
+if (args.sortStrategy) {
+  if (fs.fileExistsSync(args.sortStrategy)) {
+    args.sortStrategy = require(args.sortStrategy);
+  } else {
+    throw new Error('Invalid sort strategy', args.layout);
+    process.exit(0);
+  }
 }
 
 if (args.filter) {
