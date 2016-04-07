@@ -11,7 +11,7 @@ var strategies = {
 };
 
 if (args.layout) {
-  if (fs.fileExistsSync(args.layout)) {
+  if (fs.existsSync(args.layout)) {
     strategies.custom = require(args.layout);
     args.layout = 'custom';
   } else {
@@ -23,7 +23,7 @@ if (args.layout) {
 }
 
 if (args.sortStrategy) {
-  if (fs.fileExistsSync(args.sortStrategy)) {
+  if (fs.existsSync(args.sortStrategy)) {
     args.sortStrategy = require(args.sortStrategy);
   } else {
     throw new Error('Invalid sort strategy', args.layout);
