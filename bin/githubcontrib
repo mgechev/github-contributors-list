@@ -1,36 +1,41 @@
 #!/usr/bin/env node
 
+var SORT_STRATEGY_BASE = '../lib/sort_strategies';
+
 var args = require('minimist')(process.argv.slice(2));
 var contributors = require('../lib/contributors');
-var table = require('../lib/strategies/table');
-var list = require('../lib/strategies/list');
+var path = require('path');
 var fs = require('fs');
-var strategies = {
-  table: table,
-  list: list
-};
 
-if (args.layout) {
-  if (fs.existsSync(args.layout)) {
-    strategies.custom = require(args.layout);
-    args.layout = 'custom';
-  } else {
-    throw new Error('Invalid layout strategy', args.layout);
-    process.exit(0);
-  }
+// Layout strategy
+args.layoutStrategy = args.layoutStrategy || '../lib/layout_strategies/table.js';
+
+if (fs.existsSync(args.layoutStrategy)) {
+  args.layoutStrategy = require(args.layoutStrategy);
 } else {
-  args.layout = 'table';
+  throw new Error('Invalid layout strategy "' + args.layoutStrategy + '".');
+  process.exit(0);
 }
 
-if (args.sortStrategy) {
-  if (fs.existsSync(args.sortStrategy)) {
-    args.sortStrategy = require(args.sortStrategy);
-  } else {
-    throw new Error('Invalid sort strategy', args.layout);
-    process.exit(0);
+// Sort strategy
+if (!args.sortStrategy) {
+  var strategyModule = 'sort_asc.js';
+  if (args.sortOrder === 'desc') {
+    strategyModule = 'sort_desc.js';
   }
+  args.sortStrategy = path.join(SORT_STRATEGY_BASE, strategyModule);
+}
+if (fs.existsSync(args.sortStrategy)) {
+  args.sortStrategy = require(args.sortStrategy);
+} else {
+  throw new Error('Invalid sort strategy "' + args.layout + '".');
+  process.exit(0);
 }
 
+// Sort property
+args.sortBy = args.sortBy || 'contributions';
+
+// Filter
 if (args.filter) {
   args.filter = args.filter.split(',').filter(function (u) {
     return u.length > 0;
@@ -41,10 +46,19 @@ if (args.filter) {
   args.filter = [];
 }
 
-args.strategy = strategies[args.layout](args);
+args.filterStrategy = args.filterStrategy || '../lib/filter_strategies/login.js';
+// Fiter strategy
+if (fs.existsSync(args.filterStrategy)) {
+  args.filterStrategy = require(args.filterStrategy);
+} else {
+  throw new Error('Invalid filter strategy "' + args.filterStrategy + '".');
+  process.exit(0);
+}
+
 contributors = contributors(args);
 
 contributors.get()
 .then(function (obj) {
   console.log(obj);
 });
+
