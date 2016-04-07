@@ -2,7 +2,7 @@
 
 Build awesome list of the contributors of your project!
 
-![alt tag](https://raw.githubusercontent.com/mgechev/github-contributors-list/master/assets/demo.png)
+![Demo](https://raw.githubusercontent.com/mgechev/github-contributors-list/master/assets/demo.png)
 
 ## Usage
 
