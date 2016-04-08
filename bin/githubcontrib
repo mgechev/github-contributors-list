@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 var SORT_STRATEGY_BASE = '../lib/sort_strategies';
 
 var args = require('minimist')(process.argv.slice(2));
@@ -7,58 +6,83 @@ var contributors = require('../lib/contributors');
 var path = require('path');
 var fs = require('fs');
 
-// Layout strategy
-args.layoutStrategy = args.layoutStrategy || '../lib/layout_strategies/table.js';
 
-if (fs.existsSync(args.layoutStrategy)) {
-  args.layoutStrategy = require(args.layoutStrategy);
-} else {
-  throw new Error('Invalid layout strategy "' + args.layoutStrategy + '".');
-  process.exit(0);
-}
-
-// Sort strategy
-if (!args.sortStrategy) {
-  var strategyModule = 'sort_asc.js';
-  if (args.sortOrder === 'desc') {
-    strategyModule = 'sort_desc.js';
-  }
-  args.sortStrategy = path.join(SORT_STRATEGY_BASE, strategyModule);
-}
-if (fs.existsSync(args.sortStrategy)) {
-  args.sortStrategy = require(args.sortStrategy);
-} else {
-  throw new Error('Invalid sort strategy "' + args.layout + '".');
-  process.exit(0);
-}
-
-// Sort property
-args.sortBy = args.sortBy || 'contributions';
-
-// Filter
-if (args.filter) {
-  args.filter = args.filter.split(',').filter(function (u) {
-    return u.length > 0;
-  }).map(function (u) {
-    return u.trim();
+// Test call to get contributor list and dump to console
+contributors( validateArgs(args) )
+  .get()
+  .then(function (obj) {
+    console.log(obj);
   });
-} else {
-  args.filter = [];
+
+
+// ************************************
+// Internal methods
+// ************************************
+
+function validateArgs(args)
+{
+  init_layout(args);
+  init_sorting(args);
+  init_filtering(args);
+
+  // Validate required arguments
+  args.user = args.owner || args.user;
+  args.repo = args.repository || args.repos;
+  if (!args.repo || !args.user) throw new Error("both arguments '--repo' and '--user' are required! ");
+
+  return args
 }
 
-args.filterStrategy = args.filterStrategy || '../lib/filter_strategies/login.js';
-// Fiter strategy
-if (fs.existsSync(args.filterStrategy)) {
-  args.filterStrategy = require(args.filterStrategy);
-} else {
-  throw new Error('Invalid filter strategy "' + args.filterStrategy + '".');
-  process.exit(0);
+function init_layout(args) {
+  // Layout strategy
+  args.layoutStrategy = args.layoutStrategy || '../lib/layout_strategies/table.js';
+  if (fs.existsSync(args.layoutStrategy)) {
+    args.layoutStrategy = require(args.layoutStrategy);
+  } else {
+    throw new Error('Invalid layout strategy "' + args.layoutStrategy + '".');
+    process.exit(0);
+  }
 }
 
-contributors = contributors(args);
+function init_sorting(args) {
+  // Sort property
+  args.sortBy = args.sortBy || 'contributions';
 
-contributors.get()
-.then(function (obj) {
-  console.log(obj);
-});
+  // Sort strategy
+  if (!args.sortStrategy) {
+    var strategyModule = 'sort_asc.js';
+    if (args.sortOrder === 'desc') {
+      strategyModule = 'sort_desc.js';
+    }
+    args.sortStrategy = path.join(SORT_STRATEGY_BASE, strategyModule);
+  }
+  if (fs.existsSync(args.sortStrategy)) {
+    args.sortStrategy = require(args.sortStrategy);
+  } else {
+    throw new Error('Invalid sort strategy "' + args.layout + '".');
+    process.exit(0);
+  }
+}
+
+function init_filtering(args) {
+  // Filter
+  if (args.filter) {
+    args.filter = args.filter.split(',').filter(function (u) {
+      return u.length > 0;
+    }).map(function (u) {
+      return u.trim();
+    });
+  } else {
+    args.filter = [];
+  }
+
+  args.filterStrategy = args.filterStrategy || '../lib/filter_strategies/login.js';
+  // Filter strategy
+  if (fs.existsSync(args.filterStrategy)) {
+    args.filterStrategy = require(args.filterStrategy);
+  } else {
+    throw new Error('Invalid filter strategy "' + args.filterStrategy + '".');
+    process.exit(0);
+  }
+}
 
