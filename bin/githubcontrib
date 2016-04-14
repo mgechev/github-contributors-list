@@ -1,41 +1,41 @@
 #!/usr/bin/env node
-var SORT_STRATEGY_BASE = '../lib/sort_strategies';
+var STRATEGY_BASE = '../lib/strategies/';
 
 var args = require('minimist')(process.argv.slice(2));
 var contributors = require('../lib/contributors');
 var path = require('path');
 var fs = require('fs');
 
+var logResults = function (obj) { console.log(obj); };
+var logErrors = function (obj) { console.error(obj); };
 
 // Test call to get contributor list and dump to console
+
 contributors( validateArgs(args) )
-  .get()
-  .then(function (obj) {
-    console.log(obj);
-  });
+  .loadAll( args.owner,  args.repository, args.authToken, args.fromDate )
+  .then( logResults,logErrors );
 
 
 // ************************************
 // Internal methods
 // ************************************
 
-function validateArgs(args)
-{
+function validateArgs(args) {
   init_layout(args);
   init_sorting(args);
   init_filtering(args);
 
   // Validate required arguments
-  args.user = args.owner || args.user;
-  args.repo = args.repository || args.repos;
-  if (!args.repo || !args.user) throw new Error("both arguments '--repo' and '--user' are required! ");
+  args.owner = args.owner || args.user;
+  args.repository = args.repository || args.repos;
+  if (!args.repository || !args.owner) throw new Error("both arguments '--repo' and '--user' are required! ");
 
   return args
 }
 
 function init_layout(args) {
   // Layout strategy
-  args.layoutStrategy = args.layoutStrategy || '../lib/layout_strategies/table.js';
+  args.layoutStrategy = args.layoutStrategy || path.join(STRATEGY_BASE, 'layout_strategies/table.js');
   if (fs.existsSync(args.layoutStrategy)) {
     args.layoutStrategy = require(args.layoutStrategy);
   } else {
@@ -54,7 +54,7 @@ function init_sorting(args) {
     if (args.sortOrder === 'desc') {
       strategyModule = 'sort_desc.js';
     }
-    args.sortStrategy = path.join(SORT_STRATEGY_BASE, strategyModule);
+    args.sortStrategy = path.join(STRATEGY_BASE, 'sort_strategies/', strategyModule);
   }
   if (fs.existsSync(args.sortStrategy)) {
     args.sortStrategy = require(args.sortStrategy);
@@ -76,7 +76,7 @@ function init_filtering(args) {
     args.filter = [];
   }
 
-  args.filterStrategy = args.filterStrategy || '../lib/filter_strategies/login.js';
+  args.filterStrategy = args.filterStrategy || path.join(STRATEGY_BASE, 'filter_strategies/login.js');
   // Filter strategy
   if (fs.existsSync(args.filterStrategy)) {
     args.filterStrategy = require(args.filterStrategy);
