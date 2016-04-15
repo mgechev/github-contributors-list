@@ -1,88 +1,81 @@
 #!/usr/bin/env node
-var STRATEGY_BASE = '../lib/strategies/';
 
-var args = require('minimist')(process.argv.slice(2));
-var contributors = require('../lib/contributors');
-var path = require('path');
-var fs = require('fs');
+var LAYOUT_TABLE    = 'lib/strategies/layout_strategies/table.js';
+var LAYOUT_JSON     = 'lib/strategies/layout_strategies/json.js';
+var FILTER_STRATEGY = 'lib/strategies/filter_strategies/login.js';
+var SORT_STRATEGY   = 'lib/strategies/sort_strategies/sort_%s.js';
 
-var logResults = function (obj) { console.log(obj); };
-var logErrors = function (obj) { console.error(obj); };
+var args          = require('minimist')(process.argv.slice(2));
+var contributors  = require('../lib/contributors');
+var sprintf       = require('sprintf-js').sprintf;
+var path          = require('path');
+var fs            = require('fs');
 
-// Test call to get contributor list and dump to console
+var lib           = path.dirname(path.dirname( fs.realpathSync(__filename) ));
 
-contributors( validateArgs(args) )
-  .loadAll( args.owner,  args.repository, args.authToken, args.fromDate )
-  .then( logResults,logErrors );
+var logResults    = function (obj) {
+  var wantsJSON   = String(args.format).toLowerCase() == "json";
+
+  console.log( wantsJSON ? JSON.stringify(obj) : obj );
+};
+var logErrors     = function (obj) { console.error(obj); };
+
+
+/**
+ *  Test call to get contributor list and dump to console
+ */
+try {
+  contributors( validateArgs() )
+    .loadAll( args.owner,  args.repository, args.authToken || process.env.GITHUB_API_TOKEN, args.fromDate )
+    .then( logResults,logErrors );
+} catch( e ) {
+  logErrors( e.message );
+}
+
 
 
 // ************************************
 // Internal methods
 // ************************************
 
-function validateArgs(args) {
-  init_layout(args);
-  init_sorting(args);
-  init_filtering(args);
+/**
+ * Validate all acceptable arguments..
+ */
+function validateArgs() {
+  var ERROR_ARGS = "both arguments '--repo' and '--user' are required! ";
+  var nonEmptyFn = function (u) { return u.length > 0; };
+  var trimFn     = function (u) { return u.trim(); };
 
-  // Validate required arguments
   args.owner = args.owner || args.user;
-  args.repository = args.repo || args.repository || args.repos;
-  if (!args.repository || !args.owner) throw new Error("both arguments '--repo' and '--user' are required! ");
+  args.repository = args.repository || args.repos;
+  if (!args.repository || !args.owner) throw new Error(ERROR_ARGS);
+
+  args.sortBy    = args.sortBy || 'contributions';
+  args.sortOrder = (args.sortOrder == 'desc') ? 'desc' : 'asc';
+  args.filter    = ( args.filter || "" )
+      .split(',')
+      .filter( nonEmptyFn )
+      .map( trimFn );
+
+  var byContributions = args.sortBy == 'contributions';
+  var wantsJSON = (args.format == 'json');
+
+  validateStrategy('layoutStrategy' , wantsJSON ? LAYOUT_JSON : LAYOUT_TABLE );
+  validateStrategy('sortStrategy'   , sprintf(SORT_STRATEGY, byContributions ? args.sortOrder : args.sortBy));
+  validateStrategy('filterStrategy' , FILTER_STRATEGY);
 
   return args
 }
 
-function init_layout(args) {
-  // Layout strategy
-  args.layoutStrategy = args.layoutStrategy || path.join(STRATEGY_BASE, 'layout_strategies/table.js');
-  if (fs.existsSync(args.layoutStrategy)) {
-    args.layoutStrategy = require(args.layoutStrategy);
-  } else {
-    throw new Error('Invalid layout strategy "' + args.layoutStrategy + '".');
-    process.exit(0);
+/**
+ * Use specified strategy path or calculate the fullpath
+ * then load the strategy using `require()`
+ */
+function validateStrategy(strategy, strategySrc) {
+  var fullPath = args[strategy] = args[strategy] || path.join(lib, strategySrc);
+  if ( fs.existsSync( fullPath  )) {
+    args[strategy] = require( fullPath  );
+    return true;
   }
+  throw new Error( sprintf('Invalid %s "%s".', strategy, fullPath ) );
 }
-
-function init_sorting(args) {
-  // Sort property
-  args.sortBy = args.sortBy || 'contributions';
-
-  // Sort strategy
-  if (!args.sortStrategy) {
-    var strategyModule = 'sort_asc.js';
-    if (args.sortOrder === 'desc') {
-      strategyModule = 'sort_desc.js';
-    }
-    args.sortStrategy = path.join(STRATEGY_BASE, 'sort_strategies/', strategyModule);
-  }
-  if (fs.existsSync(args.sortStrategy)) {
-    args.sortStrategy = require(args.sortStrategy);
-  } else {
-    throw new Error('Invalid sort strategy "' + args.layout + '".');
-    process.exit(0);
-  }
-}
-
-function init_filtering(args) {
-  // Filter
-  if (args.filter) {
-    args.filter = args.filter.split(',').filter(function (u) {
-      return u.length > 0;
-    }).map(function (u) {
-      return u.trim();
-    });
-  } else {
-    args.filter = [];
-  }
-
-  args.filterStrategy = args.filterStrategy || path.join(STRATEGY_BASE, 'filter_strategies/login.js');
-  // Filter strategy
-  if (fs.existsSync(args.filterStrategy)) {
-    args.filterStrategy = require(args.filterStrategy);
-  } else {
-    throw new Error('Invalid filter strategy "' + args.filterStrategy + '".');
-    process.exit(0);
-  }
-}
-
