@@ -27,7 +27,7 @@ function validateArgs(args) {
 
   // Validate required arguments
   args.owner = args.owner || args.user;
-  args.repository = args.repository || args.repos;
+  args.repository = args.repo || args.repository || args.repos;
   if (!args.repository || !args.owner) throw new Error("both arguments '--repo' and '--user' are required! ");
 
   return args
