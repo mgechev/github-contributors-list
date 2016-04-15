@@ -15,14 +15,14 @@
   },
   "authors": [
     {
-      "name": "Thomas Burleson",
+      "name": "Minko Gechev",
       "social": "@mgechev",
       "url": "http://blog.mgechev.com/"
     },
     {
-      "name": "Minko Gechev",
-      "email": "ryan@slingingcode.com",
-      "url": "http://slingingcode.com"
+      "name": "Thomas Burleson",
+      "email": "thomasburleson@gmail.com",
+      "url": "http://solutionoptimist.com"
     }
   ],
   "license": "MIT",
