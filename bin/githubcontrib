@@ -42,12 +42,12 @@ try {
  * Validate all acceptable arguments..
  */
 function validateArgs() {
-  var ERROR_ARGS = "both arguments '--repos' and '--owner' are required! ";
+  var ERROR_ARGS = "both arguments '--repo' and '--owner' are required! ";
   var nonEmptyFn = function (u) { return u.length > 0; };
   var trimFn     = function (u) { return u.trim(); };
 
   args.owner = args.owner || args.user;
-  args.repository = args.repository || args.repos;
+  args.repository = args.repository || args.repo;
   if (!args.repository || !args.owner) throw new Error(ERROR_ARGS);
 
   args.sortBy    = args.sortBy || 'contributions';
