@@ -88,7 +88,26 @@ If, however, you want all the data and the full power... use `githubcontrib` to 
 node githubcontrib --owner angular --repository material --sha master --since 2016-04-01 --cols 6 --sortOrder desc --format md --showlogin true  > ../contributions.md
 ```
 
+## Bash Function
 
+The following bash function is quite convenient:
+
+```bash
+function ghcontrib() {
+  repo=$(basename $(pwd))
+  githubcontrib --owner USER_NAME --repo $repo --cols 6 --showlogin true --filter gitter-badger --sortOrder desc | pbcopy
+}
+```
+
+You can invoke it with:
+
+```bash
+ghcontrib
+```
+
+It assumes that you're in the project's directory, the directory is named after your project on GitHub and your username is `USER_NAME`.
+
+The function will run `githubcontrib` and put the returned markdown in your clipboard.
 
 ## GitHub Limit
 
