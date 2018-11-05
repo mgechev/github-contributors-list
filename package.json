@@ -32,7 +32,7 @@
   "homepage": "https://github.com/mgechev/github-contributors-list",
   "dependencies": {
     "marked": "~0.3.1",
-    "merge": "^1.2.0",
+    "merge": "^1.2.1",
     "minimist": "0.0.8",
     "q": "~1.4.1",
     "sprintf-js": "0.0.7"
