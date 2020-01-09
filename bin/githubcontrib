@@ -68,7 +68,7 @@ function validateArgs() {
 }
 
 /**
- * Use specified strategy path or calculate the fullpath
+ * Use specified strategy path or calculate the full path
  * then load the strategy using `require()`
  */
 function validateStrategy(strategy, strategySrc) {
