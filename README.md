@@ -32,7 +32,7 @@ This way your contributors will be formatted in a table with their photos.
 
 The table strategy accepts the following parameters:
 
-- `image-size` - Number - size of the user's avatars
+- `imagesize` - Number - size of the user's avatars
 - `format` - Enum - `MARKDOWN` or `HTML`. Default == `HTML`
 - `showlogin` - Boolean, indicates whether the login of the contributor should be shown in the table. Default == `false`
 - `columns-count` - Number - number of columns for the table
