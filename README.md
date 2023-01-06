@@ -16,7 +16,7 @@ githubcontrib --owner USERNAME --repo REPO_NAME --cols 6 --filter user1,user2,us
 
 | **Parameter name** | **Description**                                                   | **Default value**                      | **Sample value**                    |
 |--------------------|-------------------------------------------------------------------|----------------------------------------|-------------------------------------|
-| `repo`             | Repository name. ]                                                                      | (required)                                   | `--repo angular-material`              |
+| `repo`             | Repository name.                                                                        | (required)                                   | `--repo angular-material`              |
 | `owner`             | Repository owner that the repo belongs to.                                                          | (required)                                  | `--owner angular`                    |
 | `fromDate`   | YYYY-MM-DD used to determine only the contributors after the specified commit fromDate.                                                          | `''`  | `--fromDate 2016-04-01` |
 | `sha`   | SHA or branch name to start listing commits from. Default == the repository’s default branch (usually master).                                                          | `''`  | `--sha e58f3629e` |
